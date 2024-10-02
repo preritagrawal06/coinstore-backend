@@ -1,0 +1,145 @@
+const {Buyer, Seller, Admin} = require('../../Models/index')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
+const SignupController = async(req, res, next)=>{
+    const {role, email, password} = req.body
+
+    switch (role) {
+        case "BUYER":
+            if(!email || !password){
+                return res.json({
+                    success: false,
+                    message: "Information missing"
+                })
+            }
+
+            try {
+                const user = await Buyer.findOne({email: email})
+
+                if(!user){
+                    return res.json({
+                        status: false,
+                        message: "User not found!"
+                    })
+                }
+
+                const passCheck = await bcrypt.compare(password, user.password)
+
+                if(!passCheck){
+                    return res.json({
+                        success: false,
+                        message: "Password doesn't match!!"
+                    })
+                }
+
+                const token = jwt.sign(user, "secrethaiyeh")
+
+                return res.json({
+                    success: true,
+                    token,
+                    user
+                })
+
+            } catch (error) {
+                return res.json({
+                    success: false,
+                    message: error.message
+                })
+            }
+
+        case "SELLER":
+
+            if(!email || !password){
+                return res.json({
+                    success: false,
+                    message: "Information missing"
+                })
+            }
+
+            try {
+                const user = await Seller.findOne({email: email})
+
+                if(!user){
+                    return res.json({
+                        status: false,
+                        message: "User not found!"
+                    })
+                }
+
+                const passCheck = await bcrypt.compare(password, user.password)
+
+                if(!passCheck){
+                    return res.json({
+                        success: false,
+                        message: "Password doesn't match!!"
+                    })
+                }
+
+                const token = jwt.sign({userId: user.id}, "secrethaiyeh")
+
+                return res.json({
+                    success: true,
+                    token,
+                    user
+                })
+
+            } catch (error) {
+                return res.json({
+                    success: false,
+                    message: error.message
+                })
+            }
+
+        case "ADMIN":
+
+            if(!email || !password){
+                return res.json({
+                    success: false,
+                    message: "Information missing"
+                })
+            }
+
+            try {
+                const user = await Admin.findOne({email: email})
+
+                if(!user){
+                    return res.json({
+                        status: false,
+                        message: "User not found!"
+                    })
+                }
+
+                const passCheck = await bcrypt.compare(password, user.password)
+
+                if(!passCheck){
+                    return res.json({
+                        success: false,
+                        message: "Password doesn't match!!"
+                    })
+                }
+
+                const token = jwt.sign({userId: user.id}, "secrethaiyeh")
+
+                return res.json({
+                    success: true,
+                    token,
+                    user
+                })
+
+            } catch (error) {
+                return res.json({
+                    success: false,
+                    message: error.message
+                })
+            }
+    
+        default:
+            return res.json({
+                success: false,
+                message: "Role not specified"
+            })
+    }
+}
+
+module.exports = SignupController
