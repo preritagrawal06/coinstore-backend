@@ -29,7 +29,50 @@ const getAllGames = async (req, res, next)=>{
     }
 }
 
-module.exports = {getAllGames}
+const getGameTopupList = async(req, res, next)=>{
+    try {
+        const {game} = req.body
+        const {data} = await api.post('/elitedias_api_denominations', {
+            "api_key": process.env.API_KEY,
+            game: game
+        },{
+            headers:{
+                Origin: "https://google.com"
+            }
+        })
+        return res.json(data)
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error
+        })
+    }
+}
+
+const checkGameID = async(req, res)=>{
+    try {
+        const {game, userID, serverID} = req.body
+        const {data} = await api.post('/checkid', {
+            "api_key": process.env.API_KEY,
+            userid: userID,
+            serverid: serverID || "",
+            game: game
+        },{
+            headers:{
+                Origin: "https://google.com"
+            }
+        })
+        return res.json(data)
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error
+        })
+    }
+    
+}
+
+module.exports = {getAllGames, getGameTopupList, checkGameID}
 
 // "headers": {
 //     "Accept": "application/json, text/plain, */*",
