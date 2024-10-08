@@ -49,6 +49,26 @@ const getGameTopupList = async(req, res, next)=>{
     }
 }
 
+const getRequiredGameFields = async(req, res, next)=>{
+    try {
+        const {game} = req.body
+        const {data} = await api.post('/elitedias_game_fields', {
+            "api_key": process.env.API_KEY,
+            game: game
+        },{
+            headers:{
+                Origin: "https://google.com"
+            }
+        })
+        return res.json(data)
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error
+        })
+    }
+}
+
 const checkGameID = async(req, res)=>{
     try {
         const {game, userID, serverID} = req.body
