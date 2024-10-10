@@ -52,7 +52,7 @@ const getGameTopupList = async(req, res, next)=>{
 const getRequiredGameFields = async(req, res, next)=>{
     try {
         const {game} = req.body
-        const {data} = await api.post('/elitedias_game_fields', {
+        const {data} = await axios.post('/elitedias_game_fields', {
             "api_key": process.env.API_KEY,
             game: game
         },{
@@ -72,7 +72,7 @@ const getRequiredGameFields = async(req, res, next)=>{
 const checkGameID = async(req, res)=>{
     try {
         const {game, userID, serverID} = req.body
-        const {data} = await api.post('/checkid', {
+        const {data} = await api.post('https://api.elitedias.com/checkid', {
             "api_key": process.env.API_KEY,
             userid: userID,
             serverid: serverID || "",
