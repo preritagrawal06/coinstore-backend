@@ -2,8 +2,8 @@ const { default: axios } = require("axios")
 
 const initiatePayment = async(req, res)=>{
     try {
-        const {amount, gameId, serverId, name, email, phone} = req.body
-        const orderId = gameId+Date.now()
+        const {amount, gameId, serverId, name, email, phone, game, itemName} = req.body
+        const orderId = gameId+"_"+game+"_"+itemName+"_"+Date.now()
         const {data} = await axios.post("https://paygapi.onegateway.in/payment/initiate",{
             scannerIncluded: false,
             orderId: orderId,
