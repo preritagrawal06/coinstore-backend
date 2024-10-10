@@ -92,7 +92,7 @@ const checkGameID = async(req, res)=>{
     
 }
 
-module.exports = {getAllGames, getGameTopupList, checkGameID}
+module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields}
 
 // "headers": {
 //     "Accept": "application/json, text/plain, */*",

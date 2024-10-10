@@ -24,6 +24,8 @@ const buyerRouter = require('./Routes/buyerRoute.routes')
 app.use('/api/buyer', buyerRouter)
 const topupRouter = require('./Routes/topup.routes')
 app.use('/api/topup', topupRouter)
+const paymentRouter = require('./Routes/payment.routes')
+app.use('/api/payment', paymentRouter)
 
 
 app.listen(8000, ()=>{
