@@ -72,7 +72,7 @@ const getRequiredGameFields = async(req, res, next)=>{
 const checkGameID = async(req, res)=>{
     try {
         const {game, userID, serverID} = req.body
-        const {data} = await api.post('https://api.elitedias.com/checkid', {
+        const {data} = await axios.post('https://api.elitedias.com/checkid', {
             "api_key": process.env.API_KEY,
             userid: userID,
             serverid: serverID || "",
@@ -88,11 +88,34 @@ const checkGameID = async(req, res)=>{
             success: false,
             message: error
         })
-    }
-    
+    }    
 }
 
-module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields}
+const resellerTopup = async(req, res)=>{
+    try {
+        const {game, userid, serverid, denom} = req.body
+        const {data} = await axios.post("https://dev.api.elitedias.com/elitedias_reseller_topup_api",{
+            api_key: process.env.API_KEY,
+            game: game,
+            userid: userid,
+            serverid: serverid,
+            denom: denom
+        },{
+            headers:{
+                Origin: "https://google.com"
+            }
+        })
+
+        return res.json(data)
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup}
 
 // "headers": {
 //     "Accept": "application/json, text/plain, */*",
