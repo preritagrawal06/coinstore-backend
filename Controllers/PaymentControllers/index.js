@@ -26,22 +26,25 @@ const initiatePayment = async (req, res) => {
                 message: "Internal server error"
             })
         }else{
-            const { data } = await axios.post(
-                "https://paygapi.onegateway.in/payment/initiate",
-                {
-                    scannerIncluded: false,
-                    orderId: orderId,
-                    apiKey: process.env.PAYMENT_API_KEY,
-                    amount: amount,
-                    paymentNote: `Payment for topup`,
-                    customerName: name,
-                    customerEmail: email,
-                    customerNumber: phone,
-                    redirectUrl: `https://shadowcompany.netlify.app/status`,
-                }
-            );
-            console.log(data);
-            res.json(data);
+            const {data: currency} = await axios.get('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.min.json')
+            if(currency){
+                const { data } = await axios.post(
+                    "https://paygapi.onegateway.in/payment/initiate",
+                    {
+                        scannerIncluded: false,
+                        orderId: orderId,
+                        apiKey: process.env.PAYMENT_API_KEY,
+                        amount: amount*currency["usd"]["inr"],
+                        paymentNote: `Payment for topup`,
+                        customerName: name,
+                        customerEmail: email,
+                        customerNumber: phone,
+                        redirectUrl: `https://shadowcompany.netlify.app/status`,
+                    }
+                );
+                console.log(data);
+                res.json(data);
+            }
         }
     } catch (error) {
         console.log(error);
