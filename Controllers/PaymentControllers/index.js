@@ -34,7 +34,7 @@ const initiatePayment = async (req, res) => {
                         scannerIncluded: false,
                         orderId: orderId,
                         apiKey: process.env.PAYMENT_API_KEY,
-                        amount: amount*currency["usd"]["inr"],
+                        amount: (amount*currency["usd"]["inr"]).toFixed(2),
                         paymentNote: `Payment for topup`,
                         customerName: name,
                         customerEmail: email,
