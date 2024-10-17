@@ -3,7 +3,7 @@ const { default: axios } = require("axios");
 const initiatePayment = async (req, res) => {
     try {
         const { amount, gameId, serverId, name, email, phone, game, itemName } = req.body;
-        const orderId = serverId ? gameId + "_" + game + "_" + itemName + "_" + Date.now() + "_" + serverId : gameId + "_" + game + "_" + itemName + "_" + Date.now()
+        const orderId = serverId ? gameId + "_" + game + "_" + itemName + "_" + serverId : gameId + "_" + game + "_" + itemName
         const { data: balance } = await axios.post(
             "https://dev.api.elitedias.com/elitedias_api_balance",
             {
