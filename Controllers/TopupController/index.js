@@ -1,4 +1,5 @@
 const axios = require('axios')
+const Transaction = require('../../Models/transactionModel')
 
 const api = axios.create({
     baseURL: "https://dev.api.elitedias.com",
@@ -93,7 +94,7 @@ const checkGameID = async(req, res)=>{
 
 const resellerTopup = async(req, res)=>{
     try {
-        const {game, userid, serverid, denom} = req.body
+        const {game, userid, serverid, denom, paymentData} = req.body
         const {data} = await axios.post("https://dev.api.elitedias.com/elitedias_reseller_topup_api",{
             api_key: process.env.API_KEY,
             game: game,
@@ -105,8 +106,32 @@ const resellerTopup = async(req, res)=>{
                 Origin: "https://google.com"
             }
         })
+        if(data.code === "200"){
+            const transaction = new Transaction({
+                amount: paymentData.amount,
+                customerEmail: paymentData.customerEmail,
+                customerName: paymentData.customerName,
+                customerPhone: paymentData.customerPhone,
+                game,
+                itemName: denom,
+                orderid: paymentData.orderId,
+                paymentStatus: paymentData.status,
+                serverid: serverid || "",
+                transactionDate: paymentData.createdAt,
+                userid
+            })
 
-        return res.json(data)
+            transaction.save().then(()=>{
+                return res.json(data)
+            }).catch(error => {
+                return res.json({
+                    success: false,
+                    message: error.message
+                })
+            })
+        }else{
+            return res.json(data)
+        }
     } catch (error) {
         return res.json({
             success: false,
