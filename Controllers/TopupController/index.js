@@ -141,12 +141,3 @@ const resellerTopup = async(req, res)=>{
 }
 
 module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup}
-
-// "headers": {
-//     "Accept": "application/json, text/plain, */*",
-//     "Content-Type": "application/json",
-//     "Origin": "https://google.com",
-//     "User-Agent": "axios/1.7.7",
-//     "Content-Length": "365",
-//     "Accept-Encoding": "gzip, compress, deflate, br"
-// },
