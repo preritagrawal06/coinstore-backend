@@ -1,9 +1,51 @@
 const axios = require('axios')
 const Transaction = require('../../Models/transactionModel')
+const crypto = require('crypto')
 
 const api = axios.create({
     baseURL: "https://dev.api.elitedias.com",
 })
+
+const md5Sign = (data, key) => {
+    const sortedKeys = Object.keys(data).sort();
+    let stringToSign = '';
+    for (const key of sortedKeys) {
+        stringToSign += `${key}=${data[key]}&`;
+    }
+    stringToSign += key;
+    return crypto.createHash('md5').update(crypto.createHash('md5').update(stringToSign).digest('hex')).digest('hex');
+}
+
+const getSmileGames = async(req, res, next)=>{
+    try {
+
+        let payload = {
+            "uid": process.env.SMILE_UID,
+            "email": process.env.SMILE_EMAIL,
+            "time": Math.floor(Date.now()/1000),
+            "product": "mobilelegends"
+        }
+
+        payload.sign = md5Sign(payload, process.env.SMILE_API_KEY)
+
+        const {data} = await axios.post('https://www.smile.one/smilecoin/api/productlist', payload)
+        console.log(data);
+        if(data.status === 200){
+            return res.json(data)
+        }else{
+            return res.json({
+                success: false,
+                message: "Some unknown error occured"
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            success: false,
+            message: error
+        })
+    }
+}
 
 const getAllGames = async (req, res, next)=>{
     try {
@@ -32,15 +74,32 @@ const getAllGames = async (req, res, next)=>{
 
 const getGameTopupList = async(req, res, next)=>{
     try {
-        const {game} = req.body
+        const {gamecode, game} = req.body
         const {data} = await api.post('/elitedias_api_denominations', {
             "api_key": process.env.API_KEY,
-            game: game
+            game: gamecode
         },{
             headers:{
                 Origin: "https://google.com"
             }
         })
+        if(game === "Mobile Legends"){
+            let payload = {
+                "uid": process.env.SMILE_UID,
+                "email": process.env.SMILE_EMAIL,
+                "time": Math.floor(Date.now()/1000),
+                "product": "mobilelegends"
+            }
+    
+            payload.sign = md5Sign(payload, process.env.SMILE_API_KEY)
+    
+            const {data: smileone} = await axios.post('https://www.smile.one/smilecoin/api/productlist', payload)
+            console.log(smileone);
+            if(smileone.status === 200){
+                data.smileone = smileone
+            }
+        
+        }
         return res.json(data)
     } catch (error) {
         return res.json({
@@ -140,4 +199,4 @@ const resellerTopup = async(req, res)=>{
     }
 }
 
-module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup}
+module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames}
