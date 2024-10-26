@@ -154,42 +154,84 @@ const checkGameID = async(req, res)=>{
 const resellerTopup = async(req, res)=>{
     try {
         const {game, userid, serverid, denom, paymentData} = req.body
-        const {data} = await axios.post("https://dev.api.elitedias.com/elitedias_reseller_topup_api",{
-            api_key: process.env.API_KEY,
-            game: game,
-            userid: userid,
-            serverid: serverid,
-            denom: denom
-        },{
-            headers:{
-                Origin: "https://google.com"
-            }
-        })
-        if(data.code === "200"){
-            const transaction = new Transaction({
-                amount: paymentData.amount,
-                customerEmail: paymentData.customerEmail,
-                customerName: paymentData.customerName,
-                customerPhone: paymentData.customerPhone,
-                game,
-                itemName: denom,
-                orderid: paymentData.orderId,
-                paymentStatus: paymentData.status,
-                serverid: serverid || "",
-                transactionDate: paymentData.createdAt,
-                userid
+        if(paymentData.paymentNote === 'elitedias'){
+            const {data} = await axios.post("https://dev.api.elitedias.com/elitedias_reseller_topup_api",{
+                api_key: process.env.API_KEY,
+                game: game,
+                userid: userid,
+                serverid: serverid,
+                denom: denom
+            },{
+                headers:{
+                    Origin: "https://google.com"
+                }
             })
-
-            transaction.save().then(()=>{
-                return res.json(data)
-            }).catch(error => {
-                return res.json({
-                    success: false,
-                    message: error.message
+            if(data.code === "200"){
+                const transaction = new Transaction({
+                    amount: paymentData.amount,
+                    customerEmail: paymentData.customerEmail,
+                    customerName: paymentData.customerName,
+                    customerPhone: paymentData.customerPhone,
+                    game,
+                    itemName: denom,
+                    orderid: paymentData.orderId,
+                    paymentStatus: paymentData.status,
+                    serverid: serverid || "",
+                    transactionDate: paymentData.createdAt,
+                    userid
                 })
-            })
-        }else{
-            return res.json(data)
+    
+                transaction.save().then(()=>{
+                    return res.json(data)
+                }).catch(error => {
+                    return res.json({
+                        success: false,
+                        message: error.message
+                    })
+                })
+            }else{
+                return res.json(data)
+            }
+        }else if(paymentData.paymentNote === 'smileone'){
+
+            let payload = {
+                "email": process.env.SMILE_EMAIL,
+                "uid": process.env.SMILE_UID,
+                "userid": userid,
+                "zoneid": serverid,
+                "product": "mobilelegends",
+                "productid": denom,
+                "time": Math.floor(Date.now()/1000)
+            }
+    
+            payload.sign = md5Sign(payload, process.env.SMILE_API_KEY)
+            const {data} = await axios.post("https://www.smile.one/smilecoin/api/createorder",payload)
+            if(data.status === 200){
+                const transaction = new Transaction({
+                    amount: paymentData.amount,
+                    customerEmail: paymentData.customerEmail,
+                    customerName: paymentData.customerName,
+                    customerPhone: paymentData.customerPhone,
+                    game,
+                    itemName: denom,
+                    orderid: paymentData.orderId,
+                    paymentStatus: paymentData.status,
+                    serverid: serverid || "",
+                    transactionDate: paymentData.createdAt,
+                    userid
+                })
+    
+                transaction.save().then(()=>{
+                    return res.json(data)
+                }).catch(error => {
+                    return res.json({
+                        success: false,
+                        message: error.message
+                    })
+                })
+            }else{
+                return res.json(data)
+            }
         }
     } catch (error) {
         return res.json({
