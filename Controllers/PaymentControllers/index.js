@@ -1,14 +1,22 @@
 const { default: axios } = require("axios");
+const Transaction = require("../../Models/transactionModel");
 
 const initiatePayment = async (req, res) => {
     try {
         const { amount, gameId, serverId, name, email, phone, game, itemName, agent } = req.body;
         const orderId = serverId ? gameId + "-" + game + "-" + itemName + "-" + Date.now() + "-" + serverId : gameId + "-" + game + "-" + itemName + "-" + Date.now()
-        if(agent === 'elitedias'){
+        const transaction = await Transaction.findOne({orderid: orderId})
+        if(transaction){
+            return res.json({
+                success: true,
+                message: "Top-up done successfully"
+            })
+        }
+        else if(agent === 'elitedias'){
             const { data: balance } = await axios.post(
                 "https://dev.api.elitedias.com/elitedias_api_balance",
                 {
-                    api_key: "BmTy15AR73CojYFAwuNmiGBRCm0zHU9GTEwr6HimaZTNXj4_K7YoTMF3g0EUX7Q9DezpHsVQc0T-9ziPbj_d6mwMeR1Eoze48fj2glFn4P_SSmY1gaohWB1rasbGc0jkinjZvgPb0EmDFspEErJiawle2f4UlYLpyqgSJnTTTr73d8_dk567PhofNPMPgRRplABir3XcRreu4ImLceio1e_0B3s2hri2cr3DJR1PaQKFmiGg71U0jtMurLuWY86MMC74pG6OMj2-y0ddHPNR872ST_sIWkUyfX7kL6QiTZ_QnD44maChMVTOvqU30xecigyoq5_0bvbPlKnvBjeBEQ",
+                    api_key: process.env.API_KEY,
                 },
                 {
                     headers:{
