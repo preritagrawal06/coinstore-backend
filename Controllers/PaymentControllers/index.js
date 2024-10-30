@@ -5,14 +5,8 @@ const initiatePayment = async (req, res) => {
     try {
         const { amount, gameId, serverId, name, email, phone, game, itemName, agent } = req.body;
         const orderId = serverId ? gameId + "-" + game + "-" + itemName + "-" + Date.now() + "-" + serverId : gameId + "-" + game + "-" + itemName + "-" + Date.now()
-        const transaction = await Transaction.findOne({orderid: orderId})
-        if(transaction){
-            return res.json({
-                success: true,
-                message: "Top-up done successfully"
-            })
-        }
-        else if(agent === 'elitedias'){
+        
+        if(agent === 'elitedias'){
             const { data: balance } = await axios.post(
                 "https://dev.api.elitedias.com/elitedias_api_balance",
                 {

@@ -154,7 +154,14 @@ const checkGameID = async(req, res)=>{
 const resellerTopup = async(req, res)=>{
     try {
         const {game, userid, serverid, denom, paymentData} = req.body
-        if(paymentData.paymentNote === 'elitedias'){
+        const transaction = await Transaction.findOne({orderid: paymentData.orderId})
+        if(transaction){
+            return res.json({
+                success: true,
+                message: "Top-up done successfully"
+            })
+        }
+        else if(paymentData.paymentNote === 'elitedias'){
             const {data} = await axios.post("https://dev.api.elitedias.com/elitedias_reseller_topup_api",{
                 api_key: process.env.API_KEY,
                 game: game,
@@ -171,7 +178,7 @@ const resellerTopup = async(req, res)=>{
                     amount: paymentData.amount,
                     customerEmail: paymentData.customerEmail,
                     customerName: paymentData.customerName,
-                    customerPhone: paymentData.customerPhone,
+                    customerPhone: paymentData.customerNumber,
                     game,
                     itemName: denom,
                     orderid: paymentData.orderId,
