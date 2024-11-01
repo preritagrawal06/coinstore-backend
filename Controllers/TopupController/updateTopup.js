@@ -93,7 +93,7 @@ const updateTopup = async (req, res) => {
               gameCode: game.code,
               isActive: true,
               provider: "elitedias",
-              topupCode: topup,
+              topupCode: topupCode,
             });
       
             await topup.save();
@@ -136,6 +136,7 @@ const updateTopup = async (req, res) => {
             message: "Topup updated successfully"
         })
     } catch (error) {
+        console.log(error);
         return res.json({
             success: false,
             message: error
