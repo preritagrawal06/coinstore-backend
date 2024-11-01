@@ -32,7 +32,7 @@ const TopupSchema = new Schema({
         required: true
     },
     provider: {
-        type: string,
+        type: String,
         required: true
     }
 })
