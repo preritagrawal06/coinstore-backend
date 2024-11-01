@@ -89,7 +89,7 @@ const updateTopup = async (req, res) => {
               game: game.name,
               commission: 0,
               amount: price,
-              description: topup,
+              description: topupCode,
               gameCode: game.code,
               isActive: true,
               provider: "elitedias",
