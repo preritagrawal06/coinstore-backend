@@ -1,6 +1,7 @@
 const axios = require('axios')
 const Transaction = require('../../Models/transactionModel')
 const crypto = require('crypto')
+const { Topup } = require('../../Models')
 
 const api = axios.create({
     baseURL: "https://dev.api.elitedias.com",
@@ -74,33 +75,15 @@ const getAllGames = async (req, res, next)=>{
 
 const getGameTopupList = async(req, res, next)=>{
     try {
-        const {gamecode, game} = req.body
-        const {data} = await api.post('/elitedias_api_denominations', {
-            "api_key": process.env.API_KEY,
-            game: gamecode
-        },{
-            headers:{
-                Origin: "https://google.com"
-            }
+        const { game} = req.body
+        Topup.find({game: game, isActive: true}).sort({amount: 1}).then(topup => {
+            return res.json(topup)
+        }).catch(error => {
+            return res.json({
+                success: false,
+                error: error.message
+            })
         })
-        if(game === "Mobile Legends"){
-            let payload = {
-                "uid": process.env.SMILE_UID,
-                "email": process.env.SMILE_EMAIL,
-                "time": Math.floor(Date.now()/1000),
-                "product": "mobilelegends"
-            }
-    
-            payload.sign = md5Sign(payload, process.env.SMILE_API_KEY)
-    
-            const {data: smileone} = await axios.post('https://www.smile.one/smilecoin/api/productlist', payload)
-            console.log(smileone);
-            if(smileone.status === 200){
-                data.smileone = smileone
-            }
-        
-        }
-        return res.json(data)
     } catch (error) {
         return res.json({
             success: false,
@@ -248,4 +231,5 @@ const resellerTopup = async(req, res)=>{
     }
 }
 
-module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames}
+const updateTopup = require('./updateTopup')
+module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames, updateTopup}
