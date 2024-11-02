@@ -76,7 +76,7 @@ const getAllGames = async (req, res, next)=>{
 const getGameTopupList = async(req, res, next)=>{
     try {
         const { game} = req.body
-        Topup.find({game: game, isActive: true}).sort({amount: 1}).then(topup => {
+        Topup.find({game: game, isActive: true}).select('-commission').sort({amount: 1}).then(topup => {
             return res.json(topup)
         }).catch(error => {
             return res.json({
@@ -232,4 +232,8 @@ const resellerTopup = async(req, res)=>{
 }
 
 const updateTopup = require('./updateTopup')
-module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames, updateTopup}
+const getAllTopups = require('./getAllTopups')
+const getTopupById = require('./getTopupById')
+const updateTopupById = require('./updateTopupById')
+const updateStatusById = require('./updateStatusById')
+module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames, updateTopup, getAllTopups, getTopupById, updateTopupById, updateStatusById}
