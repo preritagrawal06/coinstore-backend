@@ -2,7 +2,7 @@ const {Topup} = require('../../Models')
 
 const getAllTopups = (req, res) => {
     try {
-        Topup.find().then(topup => {
+        Topup.find().sort({amount: 1}).then(topup => {
             return res.json({
                 success: true,
                 topup

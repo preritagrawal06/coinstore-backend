@@ -120,7 +120,8 @@ const SignupController = async(req, res, next)=>{
                 }
 
                 const token = jwt.sign({userId: user.id}, "secrethaiyeh")
-
+                
+                console.log(user);
                 return res.json({
                     success: true,
                     token,

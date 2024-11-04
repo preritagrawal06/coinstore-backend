@@ -3,19 +3,19 @@ const Transaction = require('../../Models/transactionModel')
 const getAllTransactions = (req, res)=>{
     try {
         Transaction.find().then((transactions)=>{
-            return res.josn({
+            return res.json({
                 success: true,
                 transactions
             })
         }).catch(error => {
-            return res.josn({
+            return res.json({
                 success: false,
                 message: "Cannot retrieve transactions right now",
                 reason: error.message
             })
         })
     } catch (error) {
-        return res.josn({
+        return res.json({
             success: false,
             message: error.message
         })
