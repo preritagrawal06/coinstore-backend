@@ -1,11 +1,17 @@
 const { default: axios } = require("axios");
-const Transaction = require("../../Models/transactionModel");
+const { Topup } = require("../../Models");
 
 const initiatePayment = async (req, res) => {
     try {
-        const { amount, gameId, serverId, name, email, phone, game, itemName, agent } = req.body;
+        const { amount, gameId, serverId, name, email, phone, game, itemName, agent, topupId } = req.body;
         const orderId = serverId ? gameId + "-" + game + "-" + itemName + "-" + Date.now() + "-" + serverId : gameId + "-" + game + "-" + itemName + "-" + Date.now()
-        
+        const topup = await Topup.findById(topupId)
+        if(topup.amount !== amount){
+            return res.json({
+                success: false,
+                message: "The amount is incorrect!"
+            })
+        }
         if(agent === 'elitedias'){
             const { data: balance } = await axios.post(
                 "https://dev.api.elitedias.com/elitedias_api_balance",
