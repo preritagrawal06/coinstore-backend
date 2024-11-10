@@ -46,7 +46,7 @@ const initiatePayment = async (req, res) => {
                         customerName: name,
                         customerEmail: email,
                         customerNumber: phone,
-                        redirectUrl: `https://shadowcompany.netlify.app/status`,
+                        redirectUrl: `https://shadowcompany.in/status`,
                     }
                 );
                 console.log(data);

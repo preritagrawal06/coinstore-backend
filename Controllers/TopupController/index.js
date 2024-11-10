@@ -1,7 +1,7 @@
 const axios = require('axios')
 const Transaction = require('../../Models/transactionModel')
 const crypto = require('crypto')
-const { Topup } = require('../../Models')
+const { Topup, Buyer } = require('../../Models')
 
 const api = axios.create({
     baseURL: "https://dev.api.elitedias.com",
@@ -211,7 +211,8 @@ const resellerTopup = async(req, res)=>{
                     userid
                 })
     
-                transaction.save().then(()=>{
+                transaction.save().then(async (txn)=>{
+                    // await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}})
                     return res.json(data)
                 }).catch(error => {
                     return res.json({

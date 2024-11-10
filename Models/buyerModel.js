@@ -27,7 +27,13 @@ const BuyerSchema = new Schema({
                 ref: "Account",
             },
         }
-    ]
+    ],
+    transactions: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Transaction",
+        },
+    ],
 }, {timestamps: true})
 
 module.exports =  mongoose.model("Buyer", BuyerSchema)
