@@ -1,5 +1,35 @@
 const { default: axios } = require("axios");
-const { Topup } = require("../../Models");
+const { Topup, Buyer } = require("../../Models");
+
+const addToWallet = async (req, res)=>{
+
+    try {
+        const {userId} = req.user
+        const {amount} = req.body
+    
+        const user = await Buyer.findById(userId).select('-password')
+        const { data } = await axios.post(
+            "https://paygapi.onegateway.in/payment/initiate",
+            {
+                scannerIncluded: true,
+                orderId: Date.now()+userId.slice(-5),
+                apiKey: process.env.PAYMENT_API_KEY,
+                amount: amount,
+                paymentNote: "wallet",
+                customerName: user.username,
+                customerEmail: user.email,
+                customerNumber: user.phone,
+                redirectUrl: `https://shadowcompany.in/status`,
+            }
+        );
+        res.json(data)
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
 
 const initiatePayment = async (req, res) => {
     try {
@@ -103,4 +133,4 @@ const paymentStatus = async (req, res) => {
     }
 };
 
-module.exports = { initiatePayment, paymentStatus };
+module.exports = { initiatePayment, paymentStatus, addToWallet };

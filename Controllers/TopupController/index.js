@@ -138,10 +138,23 @@ const resellerTopup = async(req, res)=>{
     try {
         const {game, userid, serverid, denom, paymentData} = req.body
         const transaction = await Transaction.findOne({orderid: paymentData.orderId})
+        const { data } = await axios.post(
+            "https://pay.onegateway.in/payment/status",
+            {
+                apiKey: process.env.PAYMENT_API_KEY,
+                orderId: paymentData.orderId,
+            }
+        );
         if(transaction){
             return res.json({
                 success: true,
                 message: "Top-up done successfully"
+            })
+        }
+        else if(data.status !== "success"){
+            return res.json({
+                success: false,
+                message: "orderID not found"
             })
         }
         else if(paymentData.paymentNote === 'elitedias'){
