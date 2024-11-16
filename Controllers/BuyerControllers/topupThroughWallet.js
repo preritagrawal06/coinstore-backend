@@ -1,10 +1,17 @@
-const { Transaction, Buyer } = require("../../Models")
+const { Transaction, Buyer, Topup } = require("../../Models")
 
 const topupThroughWallet = async(req, res)=>{
     try {
         const {userId} = req.user
-        const {game, userid, serverid, denom, amount, provider} = req.body
+        const {game, userid, serverid, denom, amount, provider, topupId} = req.body
         const user = await Buyer.findById(userId)
+        const topup = await Topup.findById(topupId)
+        if(topup.amount !== amount){
+            return res.json({
+                success: false,
+                message: "The amount is incorrect!"
+            })
+        }
         if(user.wallet >= amount){
             if(provider === 'elitedias'){
                 const {data} = await axios.post("https://dev.api.elitedias.com/elitedias_reseller_topup_api",{
@@ -94,7 +101,10 @@ const topupThroughWallet = async(req, res)=>{
             })
         }
     } catch (error) {
-        
+        return res.json({
+            success: false,
+            message: error.message
+        })
     }
 }
 
