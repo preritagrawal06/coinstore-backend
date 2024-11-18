@@ -32,13 +32,20 @@ const SignupController = async(req, res, next)=>{
                         message: "Password doesn't match!!"
                     })
                 }
-
-                const token = jwt.sign(user, "secrethaiyeh")
-
+                const token = jwt.sign({userId: user._id}, "secrethaiyeh")
+                const newUser = {
+                    username: user.username,
+                    email: user.email,
+                    phone: user.phone,
+                    wallet: user.wallet,
+                    transactions: user.transactions,
+                    orders: user.orders,
+                    _id: user._id
+                }
                 return res.json({
                     success: true,
                     token,
-                    user
+                    user: newUser
                 })
 
             } catch (error) {

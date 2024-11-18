@@ -32,11 +32,11 @@ const addMoneyToWallet = async(req, res)=>{
                 paymentStatus: paymentData.status,
                 serverid: "",
                 transactionDate: paymentData.createdAt,
-                userid: "wallet"
+                userid: userId
             })
     
             transaction.save().then(txn => {
-                Buyer.findByIdAndUpdate(userId, {$inc: {wallet: amount}, $push: {transactions: txn._id}}).then(()=>{
+                Buyer.findByIdAndUpdate(userId, {$inc: {wallet: paymentData.amount}, $push: {transactions: txn._id}}).then(()=>{
                     return res.json({
                         success: true,
                         message: "Money added to wallet"
