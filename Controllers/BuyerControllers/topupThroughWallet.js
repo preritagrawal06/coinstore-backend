@@ -14,6 +14,23 @@ const topupThroughWallet = async(req, res)=>{
                 message: "The amount is incorrect!"
             })
         }
+        const { data: balance } = await axios.post(
+            "https://dev.api.elitedias.com/elitedias_api_balance",
+            {
+                api_key: process.env.API_KEY,
+            },
+            {
+                headers:{
+                    Origin: 'https://google.com'
+                }
+            }
+        );
+        if(balance.code === "200" && balance.reseller_balance < amount){
+            return res.json({
+                success: false,
+                message: "Cannot process the transaction right now due to insufficient balance"
+            })
+        }
         if(user.wallet >= amount){
             if(provider === 'elitedias'){
                 const {data} = await axios.post("https://dev.api.elitedias.com/elitedias_reseller_topup_api",{
@@ -38,7 +55,7 @@ const topupThroughWallet = async(req, res)=>{
                         orderid: Date.now()+userId.split(-5),
                         paymentStatus: "success",
                         serverid: serverid || "",
-                        transactionDate: Date.now().toLocaleString("en-US"),
+                        transactionDate: new Date(),
                         userid
                     })
         
