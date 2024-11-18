@@ -1,4 +1,6 @@
+const { default: axios } = require("axios")
 const { Transaction, Buyer, Topup } = require("../../Models")
+
 
 const topupThroughWallet = async(req, res)=>{
     try {
@@ -41,8 +43,20 @@ const topupThroughWallet = async(req, res)=>{
                     })
         
                     transaction.save().then(async(txn)=>{
-                        await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}, $inc: {wallet: -1*amount}})
-                        return res.json(data)
+                        await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}, $inc: {wallet: -1*amount}},{new: true}).then((user)=>{
+                            return res.json({
+                                success: true,
+                                message: "Topup done successfully",
+                                user: {
+                                    email: user.email,
+                                    phone: user.phone,
+                                    username: user.username,
+                                    transactions: user.transactions,
+                                    orders: user.orders,
+                                    wallet: user.wallet
+                                }
+                            })
+                        })
                     }).catch(error => {
                         return res.json({
                             success: false,

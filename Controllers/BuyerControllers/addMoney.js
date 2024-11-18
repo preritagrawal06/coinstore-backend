@@ -5,6 +5,7 @@ const addMoneyToWallet = async(req, res)=>{
     try {
         const {userId} = req.user
         const {paymentData} = req.body
+        // console.log(paymentData.orderId);
         const transaction = await Transaction.findOne({orderid: paymentData.orderId})
         if(transaction){
             return res.json({
@@ -19,8 +20,8 @@ const addMoneyToWallet = async(req, res)=>{
                 orderId: paymentData.orderId,
             }
         );
-
-        if(data.status === 'success'){
+        // console.log(data);
+        if(data.success && data.data.status === 'success'){
             const transaction = new Transaction({
                 amount: paymentData.amount,
                 customerEmail: paymentData.customerEmail,
@@ -36,15 +37,24 @@ const addMoneyToWallet = async(req, res)=>{
             })
     
             transaction.save().then(txn => {
-                Buyer.findByIdAndUpdate(userId, {$inc: {wallet: paymentData.amount}, $push: {transactions: txn._id}}).then(()=>{
+                Buyer.findByIdAndUpdate(userId, {$inc: {wallet: paymentData.amount}, $push: {transactions: txn._id}}, {new: true}).then((user)=>{
+                    // console.log(user);
                     return res.json({
                         success: true,
-                        message: "Money added to wallet"
-                    }).catch(error => {
-                        return res.json({
-                            success: false,
-                            message: error.message
-                        })
+                        message: "Money added to wallet",
+                        user: {
+                            email: user.email,
+                            phone: user.phone,
+                            username: user.username,
+                            transactions: user.transactions,
+                            orders: user.orders,
+                            wallet: user.wallet
+                        }
+                    })
+                }).catch((error) => {
+                    return res.json({
+                        success: false,
+                        message: error.message
                     })
                 })
             }).catch(error => {
