@@ -185,7 +185,7 @@ const resellerTopup = async(req, res)=>{
                 })
     
                 transaction.save().then(async(txn)=>{
-                    await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}, $inc: {wallet: -1*paymentData.amount}},{new: true}).then((user)=>{
+                    await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
                         return res.json({
                             success: true,
                             message: "Topup done successfully",
@@ -239,7 +239,7 @@ const resellerTopup = async(req, res)=>{
                 })
     
                 transaction.save().then(async(txn)=>{
-                    await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}, $inc: {wallet: -1*paymentData.amount}},{new: true}).then((user)=>{
+                    await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
                         return res.json({
                             success: true,
                             message: "Topup done successfully",
