@@ -184,8 +184,21 @@ const resellerTopup = async(req, res)=>{
                     userid
                 })
     
-                transaction.save().then(()=>{
-                    return res.json(data)
+                transaction.save().then(async(txn)=>{
+                    await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}, $inc: {wallet: -1*paymentData.amount}},{new: true}).then((user)=>{
+                        return res.json({
+                            success: true,
+                            message: "Topup done successfully",
+                            user: {
+                                email: user.email,
+                                phone: user.phone,
+                                username: user.username,
+                                transactions: user.transactions,
+                                orders: user.orders,
+                                wallet: user.wallet
+                            }
+                        })
+                    })
                 }).catch(error => {
                     return res.json({
                         success: false,
@@ -209,6 +222,7 @@ const resellerTopup = async(req, res)=>{
     
             payload.sign = md5Sign(payload, process.env.SMILE_API_KEY)
             const {data} = await axios.post("https://www.smile.one/smilecoin/api/createorder",payload)
+            console.log(data);
             if(data.status === 200){
                 const transaction = new Transaction({
                     amount: paymentData.amount,
@@ -217,16 +231,28 @@ const resellerTopup = async(req, res)=>{
                     customerPhone: paymentData.customerPhone,
                     game,
                     itemName: denom,
-                    orderid: paymentData.orderId,
+                    orderid: data.order_id,
                     paymentStatus: paymentData.status,
                     serverid: serverid || "",
                     transactionDate: paymentData.createdAt,
                     userid
                 })
     
-                transaction.save().then(async (txn)=>{
-                    // await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}})
-                    return res.json(data)
+                transaction.save().then(async(txn)=>{
+                    await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}, $inc: {wallet: -1*paymentData.amount}},{new: true}).then((user)=>{
+                        return res.json({
+                            success: true,
+                            message: "Topup done successfully",
+                            user: {
+                                email: user.email,
+                                phone: user.phone,
+                                username: user.username,
+                                transactions: user.transactions,
+                                orders: user.orders,
+                                wallet: user.wallet
+                            }
+                        })
+                    })
                 }).catch(error => {
                     return res.json({
                         success: false,
@@ -238,6 +264,7 @@ const resellerTopup = async(req, res)=>{
             }
         }
     } catch (error) {
+        console.log(error);
         return res.json({
             success: false,
             message: error.message
