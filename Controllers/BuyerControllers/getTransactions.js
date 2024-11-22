@@ -4,7 +4,7 @@ const getTransactions = (req, res)=>{
     const {userId} = req.user
 
     Buyer.findById(userId).select('-password').populate('transactions').then(user => {
-        return req.json({
+        return res.json({
             success: true,
             transaction: user.transactions
         })

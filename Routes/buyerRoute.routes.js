@@ -4,7 +4,7 @@ const authMiddleWare = require('../Middlewares/authTokenMiddleware')
 
 const router = require('express').Router()
 
-router.post('/transactions/all', authMiddleWare, buyerAccessMiddleware, getTransactions)
+router.get('/transactions/all', authMiddleWare, buyerAccessMiddleware, getTransactions)
 router.post('/wallet/add', authMiddleWare, buyerAccessMiddleware, addMoneyToWallet)
 router.post('/wallet/topup', authMiddleWare, buyerAccessMiddleware, topupThroughWallet)
 
