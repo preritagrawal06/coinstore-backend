@@ -44,6 +44,10 @@ const transactionSchema = new Schema({
     orderid: {
         type: String,
         required: true
+    },
+    logs: {
+        paymentLog: String,
+        providerLog: String
     }
 })
 

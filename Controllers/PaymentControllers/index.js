@@ -54,7 +54,8 @@ const initiatePayment = async (req, res) => {
                     }
                 }
             );
-            if(balance.code === "200" && balance.reseller_balance < amount){
+            const { data: usdData } = await axios.get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.min.json")
+            if(balance.code === "200" && balance.reseller_balance*usdData.usd.inr < amount){
                 return res.json({
                     success: false,
                     message: "Cannot process the transaction right now due to insufficient balance"

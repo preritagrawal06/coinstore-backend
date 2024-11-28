@@ -38,7 +38,8 @@ const topupThroughWallet = async(req, res)=>{
                         }
                     }
                 );
-                if(balance.code === "200" && balance.reseller_balance < amount){
+                const { data: usdData } = await axios.get("https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.min.json")
+                if(balance.code === "200" && balance.reseller_balance*usdData.usd.inr < amount){
                     return res.json({
                         success: false,
                         message: "Cannot process the transaction right now due to insufficient balance"
@@ -67,7 +68,11 @@ const topupThroughWallet = async(req, res)=>{
                         paymentStatus: "success",
                         serverid: serverid || "",
                         transactionDate: new Date(),
-                        userid
+                        userid,
+                        logs:{
+                            paymentLog: JSON.stringify({payment: "wallet"}),
+                            providerLog: JSON.stringify(data)
+                        }
                     })
         
                     transaction.save().then(async(txn)=>{
@@ -92,6 +97,45 @@ const topupThroughWallet = async(req, res)=>{
                         })
                     })
                 }else{
+                    const transaction = new Transaction({
+                        amount: amount,
+                        customerEmail: user.email,
+                        customerName: user.username,
+                        customerPhone: user.phone,
+                        game,
+                        itemName: denom,
+                        orderid: data.order_id,
+                        paymentStatus: "failure",
+                        serverid: serverid || "",
+                        transactionDate: new Date(),
+                        userid,
+                        logs:{
+                            paymentLog: JSON.stringify({payment: "wallet"}),
+                            providerLog: JSON.stringify(data)
+                        }
+                    })
+        
+                    transaction.save().then(async(txn)=>{
+                        await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
+                            return res.json({
+                                success: true,
+                                message: "Topup unsuccessful",
+                                user: {
+                                    email: user.email,
+                                    phone: user.phone,
+                                    username: user.username,
+                                    transactions: user.transactions,
+                                    orders: user.orders,
+                                    wallet: user.wallet
+                                }
+                            })
+                        })
+                    }).catch(error => {
+                        return res.json({
+                            success: false,
+                            message: error.message
+                        })
+                    })
                     return res.json(data)
                 }
             }else if(provider === 'smileone'){
@@ -121,7 +165,11 @@ const topupThroughWallet = async(req, res)=>{
                         paymentStatus: "success",
                         serverid: serverid || "",
                         transactionDate: new Date(),
-                        userid
+                        userid,
+                        logs:{
+                            paymentLog: JSON.stringify({payment: "wallet"}),
+                            providerLog: JSON.stringify(data)
+                        }
                     })
         
                     transaction.save().then(async(txn)=>{
@@ -146,6 +194,45 @@ const topupThroughWallet = async(req, res)=>{
                         })
                     })
                 }else{
+                    const transaction = new Transaction({
+                        amount: amount,
+                        customerEmail: user.email,
+                        customerName: user.username,
+                        customerPhone: user.phone,
+                        game,
+                        itemName: denom,
+                        orderid: data.order_id,
+                        paymentStatus: "failure",
+                        serverid: serverid || "",
+                        transactionDate: new Date(),
+                        userid,
+                        logs:{
+                            paymentLog: JSON.stringify({payment: "wallet"}),
+                            providerLog: JSON.stringify(data)
+                        }
+                    })
+        
+                    transaction.save().then(async(txn)=>{
+                        await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
+                            return res.json({
+                                success: true,
+                                message: "Topup unsuccessful",
+                                user: {
+                                    email: user.email,
+                                    phone: user.phone,
+                                    username: user.username,
+                                    transactions: user.transactions,
+                                    orders: user.orders,
+                                    wallet: user.wallet
+                                }
+                            })
+                        })
+                    }).catch(error => {
+                        return res.json({
+                            success: false,
+                            message: error.message
+                        })
+                    })
                     return res.json(data)
                 }
             }
