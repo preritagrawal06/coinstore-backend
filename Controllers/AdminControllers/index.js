@@ -1,3 +1,3 @@
 const approveSellerController = require('./approveSellerController')
-
-module.exports = {approveSellerController}
+const walletAction = require('./walletAction')
+module.exports = {approveSellerController, walletAction}
