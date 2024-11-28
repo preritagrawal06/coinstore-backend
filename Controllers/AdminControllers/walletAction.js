@@ -15,7 +15,7 @@ const walletAction = async(req, res)=>{
         const transaction = new Transaction({
             amount,
             customerEmail: user.email,
-            customerName: user.name,
+            customerName: user.username,
             customerPhone: user.phone,
             game: "wallet",
             itemName: reason,
