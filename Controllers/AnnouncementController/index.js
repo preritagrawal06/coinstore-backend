@@ -34,4 +34,22 @@ const getAnnouncements = (req, res) => {
     }
 }
 
-module.exports = {addAnnouncement, getAnnouncements}
+const deleteAnnouncement = (req, res) => {
+    try {
+        const {id} = req.body
+        // console.log(id);
+        Announcement.findByIdAndDelete(id).then(() => {
+            return res.json({
+                success: true,
+                message: "Announcement deleted"
+            })
+        })
+    } catch (error) {
+        return res.json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+module.exports = {addAnnouncement, getAnnouncements, deleteAnnouncement}

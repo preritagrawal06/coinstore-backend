@@ -8,6 +8,6 @@ const router = require('express').Router()
 router.get('/transactions/all', authMiddleWare, buyerAccessMiddleware, getTransactions)
 router.post('/wallet/add', authMiddleWare, buyerAccessMiddleware, addMoneyToWallet)
 router.post('/wallet/topup', authMiddleWare, buyerAccessMiddleware, topupThroughWallet)
-router.post('get-announcement', getAnnouncements)
+router.get('/get-announcement', getAnnouncements)
 
 module.exports = router
