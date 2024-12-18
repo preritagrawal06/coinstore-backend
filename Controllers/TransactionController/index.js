@@ -2,7 +2,7 @@ const Transaction = require('../../Models/transactionModel')
 
 const getAllTransactions = (req, res)=>{
     try {
-        Transaction.find().then((transactions)=>{
+        Transaction.find().sort({createdAt: -1}).then((transactions)=>{
             return res.json({
                 success: true,
                 transactions
