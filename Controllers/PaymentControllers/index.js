@@ -1,5 +1,5 @@
 const { default: axios } = require("axios");
-const { Topup, Buyer } = require("../../Models");
+const { Topup, Buyer, Transaction } = require("../../Models");
 
 const addToWallet = async (req, res)=>{
 
@@ -115,15 +115,25 @@ const paymentStatus = async (req, res) => {
     try {
         const orderId = req.query.orderId;
         // console.log(orderId);
-        const { data } = await axios.post(
-            "https://pay.onegateway.in/payment/status",
-            {
-                apiKey: process.env.PAYMENT_API_KEY,
-                orderId: orderId,
-            }
-        );
-
-        res.json(data);
+        const mode = req.query.mode
+        if(mode === 'wallet'){
+            Transaction.findOne({orderid: orderId}).then((txn)=>{ 
+                res.json({
+                    success: true,
+                    transaction: txn
+                })
+            })
+        }else{
+            const { data } = await axios.post(
+                "https://pay.onegateway.in/payment/status",
+                {
+                    apiKey: process.env.PAYMENT_API_KEY,
+                    orderId: orderId,
+                }
+            );
+    
+            res.json(data);
+        }
     } catch (error) {
         console.log(error.message);
         res.json({
