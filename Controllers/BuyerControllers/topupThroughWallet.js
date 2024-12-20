@@ -64,7 +64,7 @@ const topupThroughWallet = async(req, res)=>{
                         customerPhone: user.phone,
                         game,
                         itemName: denom,
-                        orderid: Date.now()+userId.split(-5),
+                        orderid: Date.now()+userId.slice(-5),
                         paymentStatus: "success",
                         serverid: serverid || "",
                         transactionDate: new Date(),
