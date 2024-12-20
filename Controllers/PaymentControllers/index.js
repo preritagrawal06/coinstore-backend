@@ -116,11 +116,22 @@ const paymentStatus = async (req, res) => {
         const orderId = req.query.orderId;
         // console.log(orderId);
         const mode = req.query.mode
+        
         if(mode === 'wallet'){
             Transaction.findOne({orderid: orderId}).then((txn)=>{ 
                 res.json({
                     success: true,
-                    transaction: txn
+                    data: {
+                        status: "success",
+                        createdAt: txn.transactionDate,
+                        orderId: txn.orderid,
+                        customerEmail: txn.customerEmail,
+                        customerName: txn.customerName,
+                        customerPhone: txn.customerPhone,
+                        userId: txn.userid,
+                        serverId: txn.serverid,
+                        amount: txn.amount
+                    }
                 })
             })
         }else{
