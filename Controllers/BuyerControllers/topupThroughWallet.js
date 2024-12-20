@@ -80,6 +80,7 @@ const topupThroughWallet = async(req, res)=>{
                             return res.json({
                                 success: true,
                                 message: "Topup done successfully",
+                                txn,
                                 user: {
                                     email: user.email,
                                     phone: user.phone,
