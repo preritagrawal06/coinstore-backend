@@ -130,7 +130,9 @@ const paymentStatus = async (req, res) => {
                         customerPhone: txn.customerPhone,
                         userId: txn.userid,
                         serverId: txn.serverid,
-                        amount: txn.amount
+                        game: txn.game,
+                        amount: txn.amount,
+                        itemName: txn.itemName
                     }
                 })
             })
