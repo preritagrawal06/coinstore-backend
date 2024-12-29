@@ -145,6 +145,7 @@ const resellerTopup = async(req, res)=>{
                 transaction
             })
         }
+        console.log(transaction);
         const { data } = await axios.post(
             "https://pay.onegateway.in/payment/status",
             {
@@ -152,7 +153,13 @@ const resellerTopup = async(req, res)=>{
                 orderId: paymentData.orderId,
             }
         );
-        if(data.status !== "success"){
+        if(data.data.status === "success"){
+            return res.json({
+                success: false,
+                message: "Topup done successfully"
+            })
+        }
+        if(!data.success || data.data.status !== "success"){
             return res.json({
                 success: false,
                 message: "orderID not found"
@@ -190,6 +197,7 @@ const resellerTopup = async(req, res)=>{
                 })
     
                 transaction.save().then(async(txn)=>{
+                    console.log('transaction added successfully');
                     await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
                         return res.json({
                             success: true,
@@ -230,6 +238,7 @@ const resellerTopup = async(req, res)=>{
                 })
     
                 transaction.save().then(async(txn)=>{
+                    console.log('transaction added successfully');
                     await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
                         return res.json({
                             success: true,
@@ -286,6 +295,7 @@ const resellerTopup = async(req, res)=>{
                 })
     
                 transaction.save().then(async(txn)=>{
+                    console.log('transaction added successfully');
                     await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
                         return res.json({
                             success: true,
@@ -326,6 +336,7 @@ const resellerTopup = async(req, res)=>{
                 })
     
                 transaction.save().then(async(txn)=>{
+                    console.log('transaction added successfully');
                     await Buyer.findOneAndUpdate({email: txn.customerEmail}, {$push: {transactions: txn._id}},{new: true}).then((user)=>{
                         return res.json({
                             success: true,
@@ -362,4 +373,5 @@ const getAllTopups = require('./getAllTopups')
 const getTopupById = require('./getTopupById')
 const updateTopupById = require('./updateTopupById')
 const updateStatusById = require('./updateStatusById')
+const { log } = require('console')
 module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames, updateTopup, getAllTopups, getTopupById, updateTopupById, updateStatusById}
