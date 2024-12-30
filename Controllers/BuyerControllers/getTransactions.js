@@ -6,7 +6,7 @@ const getTransactions = (req, res)=>{
     Buyer.findById(userId).select('-password').populate('transactions').then(user => {
         return res.json({
             success: true,
-            transaction: user.transactions
+            transaction: user.transactions.reverse()
         })
     }).catch(error =>{
         console.log(error.message);

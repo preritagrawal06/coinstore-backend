@@ -1,6 +1,7 @@
 const {Buyer, Seller, Admin} = require('../../Models/index')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const validateEmail = require('../../utils/emailValidator')
 const cloudinary = require('cloudinary').v2
 
 const SignupController = async(req, res, next)=>{
@@ -14,7 +15,12 @@ const SignupController = async(req, res, next)=>{
                     message: "Information missing"
                 })
             }
-
+            if(!validateEmail(email)){
+                return res.json({
+                    success: false,
+                    message: "Enter a valid email"
+                })
+            }
             try {
                 const exist = await Buyer.findOne({email: email})
 
@@ -58,7 +64,12 @@ const SignupController = async(req, res, next)=>{
                     message: "Information missing"
                 })
             }
-
+            if(!validateEmail(email)){
+                return res.json({
+                    success: false,
+                    message: "Enter a valid email"
+                })
+            }
             try {
                 const exist = await Admin.findOne({email: email})
 
@@ -103,7 +114,12 @@ const SignupController = async(req, res, next)=>{
                     message: "Information missing"
                 })
             }
-
+            if(!validateEmail(email)){
+                return res.json({
+                    success: false,
+                    message: "Enter a valid email"
+                })
+            }
             try {
                 const exist = await Seller.findOne({email: email})
 

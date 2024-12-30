@@ -1,8 +1,9 @@
 const {Buyer, Seller, Admin} = require('../../Models/index')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const validateEmail = require('../../utils/emailValidator')
 
-const SignupController = async(req, res, next)=>{
+const loginController = async(req, res, next)=>{
     const {role, email, password} = req.body
 
     switch (role) {
@@ -13,7 +14,12 @@ const SignupController = async(req, res, next)=>{
                     message: "Information missing"
                 })
             }
-
+            if(!validateEmail(email)){
+                return res.json({
+                    success: false,
+                    message: "Enter a valid email"
+                })
+            }
             try {
                 const user = await Buyer.findOne({email: email})
 
@@ -63,7 +69,12 @@ const SignupController = async(req, res, next)=>{
                     message: "Information missing"
                 })
             }
-
+            if(!validateEmail(email)){
+                return res.json({
+                    success: false,
+                    message: "Enter a valid email"
+                })
+            }
             try {
                 const user = await Seller.findOne({email: email})
 
@@ -106,7 +117,12 @@ const SignupController = async(req, res, next)=>{
                     message: "Information missing"
                 })
             }
-
+            if(!validateEmail(email)){
+                return res.json({
+                    success: false,
+                    message: "Enter a valid email"
+                })
+            }
             try {
                 const user = await Admin.findOne({email: email})
 
@@ -150,4 +166,4 @@ const SignupController = async(req, res, next)=>{
     }
 }
 
-module.exports = SignupController
+module.exports = loginController
