@@ -5,7 +5,7 @@ const validateEmail = require('../../utils/emailValidator')
 const validatePhoneNumber = require('../../utils/phoneValidator')
 
 const loginController = async(req, res, next)=>{
-    const {role, phone} = req.body
+    const {role, phone, email, password} = req.body
     console.log(req.body);
     switch (role) {
         case "BUYER":
