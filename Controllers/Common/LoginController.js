@@ -2,26 +2,27 @@ const {Buyer, Seller, Admin} = require('../../Models/index')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const validateEmail = require('../../utils/emailValidator')
+const validatePhoneNumber = require('../../utils/phoneValidator')
 
 const loginController = async(req, res, next)=>{
-    const {role, email, password} = req.body
-
+    const {role, phone} = req.body
+    console.log(req.body);
     switch (role) {
         case "BUYER":
-            if(!email || !password){
+            if(!phone){
                 return res.json({
                     success: false,
                     message: "Information missing"
                 })
             }
-            if(!validateEmail(email)){
+            if(!validatePhoneNumber(phone)){
                 return res.json({
                     success: false,
-                    message: "Enter a valid email"
+                    message: "Enter a valid phone"
                 })
             }
             try {
-                const user = await Buyer.findOne({email: email})
+                const user = await Buyer.findOne({phone: phone})
 
                 if(!user){
                     return res.json({
@@ -30,14 +31,14 @@ const loginController = async(req, res, next)=>{
                     })
                 }
 
-                const passCheck = await bcrypt.compare(password, user.password)
+                // const passCheck = await bcrypt.compare(password, user.password)
 
-                if(!passCheck){
-                    return res.json({
-                        success: false,
-                        message: "Password doesn't match!!"
-                    })
-                }
+                // if(!passCheck){
+                //     return res.json({
+                //         success: false,
+                //         message: "Password doesn't match!!"
+                //     })
+                // }
                 const token = jwt.sign({userId: user._id}, "secrethaiyeh")
                 const newUser = {
                     username: user.username,

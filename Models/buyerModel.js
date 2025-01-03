@@ -16,10 +16,6 @@ const BuyerSchema = new Schema({
         required: true,
         unique: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     orders: [
         {
             account_id:{

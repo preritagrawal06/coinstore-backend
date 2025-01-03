@@ -2,6 +2,7 @@ const {Buyer, Seller, Admin} = require('../../Models/index')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const validateEmail = require('../../utils/emailValidator')
+const validatePhoneNumber = require('../../utils/phoneValidator')
 const cloudinary = require('cloudinary').v2
 
 const SignupController = async(req, res, next)=>{
@@ -9,7 +10,7 @@ const SignupController = async(req, res, next)=>{
 
     switch (role) {
         case "BUYER":
-            if(!username || !email || !phone || !password){
+            if(!username || !email || !phone){
                 return res.json({
                     success: false,
                     message: "Information missing"
@@ -21,18 +22,26 @@ const SignupController = async(req, res, next)=>{
                     message: "Enter a valid email"
                 })
             }
-            try {
-                const exist = await Buyer.findOne({email: email})
+            if(!validatePhoneNumber(phone)){
+                return res.json({
+                    success: false,
+                    message: "Enter a valid phone number"
+                })
 
-                if(exist){
+            }
+            try {
+                const phoneexist = await Buyer.findOne({phone: phone})
+                const emailexist = await Buyer.findOne({email: email})
+
+                if(phoneexist || emailexist){
                     return res.json({
                         status: false,
                         message: "User already exist!"
                     })
                 }
-                const salt = await bcrypt.genSalt(10)
-                const hash = await bcrypt.hash(password, salt)
-                const user = new Buyer({username, email, phone, password: hash})
+                // const salt = await bcrypt.genSalt(10)
+                // const hash = await bcrypt.hash(password, salt)
+                const user = new Buyer({username, email, phone})
                 user.save()
                     .then((user)=>{
                         console.log(user)
