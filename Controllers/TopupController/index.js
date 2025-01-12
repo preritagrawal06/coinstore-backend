@@ -141,7 +141,7 @@ const resellerTopup = async(req, res)=>{
         if(transaction){
             return res.json({
                 success: true,
-                message: "Top-up done successfully",
+                message: transaction.paymentStatus ==="failure" ? "Top-up unsuccessful" : "Top-up done successfully",
                 transaction
             })
         }
