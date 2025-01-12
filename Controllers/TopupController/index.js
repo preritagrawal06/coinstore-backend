@@ -349,10 +349,6 @@ const resellerTopup = async(req, res)=>{
                     })
                 }
             }
-            return res.json({
-                success: false,
-                message: "Topup done successfully"
-            })
         }
         if(!data.success || data.data.status !== "success"){
             return res.json({
