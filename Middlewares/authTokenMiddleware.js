@@ -13,7 +13,7 @@ const authMiddleWare = async(req, res, next)=>{
         
         const authToken = token.split(" ")[1]
         const user = jwt.verify(authToken, "secrethaiyeh")
-        // console.log(user)
+        console.log(user)
         if(!user){
             res.json({
                 success: false,
