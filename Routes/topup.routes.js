@@ -1,4 +1,4 @@
-const {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames, updateTopup, getAllTopups, getTopupById, updateTopupById, updateStatusById} = require('../Controllers/TopupController')
+const {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames, updateTopup, getAllTopups, getTopupById, updateTopupById, updateStatusById, deleteTopupById, addNewTopup} = require('../Controllers/TopupController')
 const { authMiddleware, adminAccessMiddleware } = require('../Middlewares')
 const router = require('express').Router()
 
@@ -12,5 +12,7 @@ router.post('/update-all-topup', authMiddleware, adminAccessMiddleware, updateTo
 router.get('/get-all-topup', authMiddleware, adminAccessMiddleware, getAllTopups) // TODO: add admin access middleware
 router.post('/get-topup', authMiddleware, adminAccessMiddleware, getTopupById) // TODO: add admin access middleware
 router.post('/update-topup', authMiddleware, adminAccessMiddleware, updateTopupById) // TODO: add admin access middleware
+router.post('/delete-topup', authMiddleware, adminAccessMiddleware, deleteTopupById) // TODO: add admin access middleware
+router.post('/create-topup', authMiddleware, adminAccessMiddleware, addNewTopup) // TODO: add admin access middleware
 router.post('/update-status-topup', authMiddleware, adminAccessMiddleware, updateStatusById) // TODO: add admin access middleware
 module.exports = router

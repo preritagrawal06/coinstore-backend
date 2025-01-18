@@ -370,5 +370,21 @@ const getAllTopups = require('./getAllTopups')
 const getTopupById = require('./getTopupById')
 const updateTopupById = require('./updateTopupById')
 const updateStatusById = require('./updateStatusById')
-const { log } = require('console')
-module.exports = {getAllGames, getGameTopupList, checkGameID, getRequiredGameFields, resellerTopup, getSmileGames, updateTopup, getAllTopups, getTopupById, updateTopupById, updateStatusById}
+const addNewTopup = require('./addNewTopup')
+const deleteTopupById = require('./deleteTopupById')
+
+module.exports = {
+    getAllGames, 
+    getGameTopupList, 
+    checkGameID, 
+    getRequiredGameFields, 
+    resellerTopup, 
+    getSmileGames, 
+    updateTopup, 
+    getAllTopups, 
+    getTopupById, 
+    updateTopupById, 
+    updateStatusById,
+    addNewTopup,
+    deleteTopupById
+}
