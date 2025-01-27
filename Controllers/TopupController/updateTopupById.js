@@ -4,17 +4,18 @@ const updateTopupById = (req, res) => {
     try {
         const {topupId, game, gameCode, amount, commission, description, provider, topupCode} = req.body
         Topup.findByIdAndUpdate(topupId, {
-            game: game,
+            game: game.trim(),
             gameCode: gameCode,
             amount: amount,
             commission: commission,
             description: description,
-            topupCode: topupCode,
+            topupCode: topupCode.trim(),
             provider: provider
         }).then(topup => {
             return res.json({
                 success: true,
-                topup
+                topup,
+                message: "Topup updated successfully"
             })
         }).catch((error)=>{
             return res.json({
