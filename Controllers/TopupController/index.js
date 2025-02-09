@@ -270,7 +270,7 @@ const resellerTopup = async(req, res)=>{
                         amount: paymentData.amount,
                         customerEmail: paymentData.customerEmail,
                         customerName: paymentData.customerName,
-                        customerPhone: paymentData.customerPhone,
+                        customerPhone: paymentData.customerNumber,
                         game,
                         itemName: denom,
                         orderid: data.order_id,
