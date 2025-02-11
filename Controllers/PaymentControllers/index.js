@@ -34,7 +34,7 @@ const addToWallet = async (req, res)=>{
 const initiatePayment = async (req, res) => {
     try {
         const { amount, gameId, serverId, name, email, phone, game, itemName, agent, topupId } = req.body;
-        const orderId = serverId ? gameId + "-" + game + "-" + itemName + "-" + Date.now() + "-" + serverId : gameId + "-" + game + "-" + itemName + "-" + Date.now()
+        const orderId = serverId ? gameId.trim() + "-" + game + "-" + itemName + "-" + Date.now() + "-" + serverId.trim() : gameId.trim() + "-" + game + "-" + itemName + "-" + Date.now()
         const topup = await Topup.findById(topupId)
         if(topup.amount !== amount){
             return res.json({
